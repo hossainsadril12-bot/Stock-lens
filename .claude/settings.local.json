@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__plugin_figma_figma__generate_diagram",
+      "mcp__plugin_figma_figma__use_figma",
+      "mcp__plugin_figma_figma__whoami",
+      "mcp__plugin_figma_figma__get_screenshot",
+      "Bash(curl *)",
+      "mcp__plugin_figma_figma__get_figjam",
+      "WebFetch(domain:www.figma.com)",
+      "Bash(claude mcp *)",
+      "Bash(claude --version)",
+      "Bash(rm \"C:/Users/Sadril/.claude/projects/D--Ventatrack-StockLens/memory/stocklens-figma-board-redraw-pending.md\")",
+      "Bash(node \"C:/Users/Sadril/.claude/skills/impeccable/scripts/context.mjs\")",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(grep -q \"Ready\\\\|started server\\\\|Local:\" dev.log)",
+      "Bash(break)",
+      "Bash(npm i *)",
+      "Bash(npx playwright *)",
+      "Bash(node shots.mjs \"C:/Users/Sadril/AppData/Local/Temp/claude/D--Ventatrack-StockLens/f8bbce40-3824-4105-a7e1-27276315ebe8/scratchpad\")",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(node -e \"console.log\\(require\\('next/package.json'\\).version\\)\")",
+      "Bash(rm -rf .next)",
+      "Bash(grep -q \"Ready\" dev.log)",
+      "Bash(git commit -q -m ' *)",
+      "Bash(git branch *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(git add *)"
+    ]
+  }
+}

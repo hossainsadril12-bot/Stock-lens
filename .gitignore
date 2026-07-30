@@ -1,5 +1,5 @@
-# local agent / editor config
-.claude/
+# .claude/ is intentionally tracked so the workspace is portable across machines
+# (settings.local.json = permission allowlist only, no secrets)
 
 # dependencies / build output (development/ has its own too)
 **/node_modules/
