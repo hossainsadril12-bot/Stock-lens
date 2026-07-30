@@ -1,0 +1,599 @@
+# StockLens — UX Research & Feature Analysis
+
+**Module:** VantaTrack StockLens (Inventory)
+**Source document:** StockLens PRD v3.0 (July 2026)
+**Prepared by:** UX Design
+**Stage:** Empathize + Define (pre-wireframe)
+**Status:** Working document
+
+---
+
+## How to use this document
+
+This is not a summary of the PRD. The PRD already lists *what* to build.
+
+This document answers three things the PRD does not:
+
+1. **Who** actually touches each feature, and how often
+2. **Where** the feature list runs out before the human job is finished
+3. **What** we will do about it
+
+Read in this order: personas → feature list → journeys → problems → principles.
+Everything after the journeys was *derived* from them, not invented.
+
+**One-line design brief for this project:**
+
+> The system knows more than it says. Our job is to make it speak.
+
+---
+
+## Table of contents
+
+1. [The people](#1-the-people)
+2. [Feature list rearranged by user](#2-feature-list-rearranged-by-user)
+3. [Automatic features (no screen needed)](#3-automatic-features-no-screen-needed)
+4. [New solutions not in the PRD](#4-new-solutions-not-in-the-prd)
+5. [User journeys](#5-user-journeys)
+6. [What the journeys revealed](#6-what-the-journeys-revealed)
+7. [The eight real problems](#7-the-eight-real-problems)
+8. [The root problem](#8-the-root-problem)
+9. [Design principles](#9-design-principles)
+10. [Phase 1 scope](#10-phase-1-scope)
+11. [Decision log](#11-decision-log)
+12. [Open questions for the product owner](#12-open-questions-for-the-product-owner)
+
+---
+
+## 1. The people
+
+These are working personas built from the PRD's three roles. They are **assumptions** until validated with real users.
+
+### Rahim, 26 — StockLens Staff
+
+Warehouse assistant at a printing business.
+
+| | |
+|---|---|
+| Device | Cracked Android phone. No laptop. |
+| Posture | Standing, walking, one hand holding a box |
+| Environment | Noisy loading bay, poor light, weak signal |
+| Tech comfort | Uses WhatsApp fluently. Has never used inventory software. |
+| Types | Slowly, with typos |
+| Attention | Seconds. Someone is usually waiting for him. |
+| Uses daily | Search, scan, stock in/out, check his location's stock |
+| Cannot | Delete items, change prices, approve anything |
+
+**What he needs:** speed, big targets, minimum typing, an answer without navigating.
+
+### Mr. Anwar, 48 — StockLens Admin
+
+Owner of the business.
+
+| | |
+|---|---|
+| Device | Laptop for setup. Phone for everything else. |
+| Two modes | **Setup** (once, sitting, patient) and **Daily** (30 seconds, standing, impatient) |
+| Tech comfort | Excellent with Excel. Suspicious of software. |
+| Attention | 15 minutes on day one. 40 seconds every morning after. |
+| Uses | Everything |
+| Special power | The only person who can approve POs above threshold |
+
+**What he needs:** a fast setup that proves value early, then a glanceable daily check he can act on from his phone.
+
+> **Critical insight:** Setup-Anwar and Daily-Anwar need opposite designs. Same person, same role, two products.
+
+### Mr. Salam, 55 — StockLens Viewer
+
+Investor in one of the client's buildings.
+
+| | |
+|---|---|
+| Frequency | Twice a month |
+| Memory of the app | Zero, every time |
+| Wants | One number, then to leave |
+| Access | Read-only |
+
+**What he needs:** screens that explain themselves. No learned behaviour, no hidden menus.
+
+---
+
+## 2. Feature list rearranged by user
+
+Legend for the **Gap** column:
+
+| Symbol | Meaning |
+|---|---|
+| 🕳️ Missing | The user needs it; it does not exist |
+| ✂️ Half-built | Exists, but stops before the job is done |
+| ⏱️ Wrong phase | Exists, but arrives too late to be useful |
+| ⚔️ Collides | Two features fight each other in real use |
+| ✅ Fine | No gap found |
+
+Priority: 🔴 blocks design · 🟡 slows design · 🟢 nice to know
+
+---
+
+### 2.1 RAHIM — Staff (all day, standing, hurrying)
+
+| # | Feature | PRD ref | What he actually does | Gap | Solution |
+|---|---|---|---|---|---|
+| R1 | Search / item lookup | §4 roles only | Finds one item in 400, fast | 🕳️ 🔴 Never specified anywhere in the PRD | Search name + SKU + barcode + serial + batch in one box. Typo-tolerant. Recent items when empty. Answer visible in the result row. |
+| R2 | Barcode & QR scan | 6.7 | Opens an item by camera | 🕳️ 🔴 No location in UI, no failure path | Scan reachable in one tap from anywhere. Continuous scan mode. Manual-entry fallback. "Not found → create it?" |
+| R3 | Stock in / stock out | 6.3 | Records movements | ✂️ 🟡 Not designed for standing use | Big touch targets, scan-to-prefill, minimum typing |
+| R4 | See stock at his location | 6.9 | Checks what is here | ✂️ 🔴 PRD stores 3 numbers, never says which one shows | **Available is the primary number.** On hand secondary and grey. Reserved on detail only. |
+| R5 | Batch & serial entry | 6.10 | Types batch no., scans serial | ✂️ 🟡 Small print, bad light | Scan first, type second. Allow scanning the expiry date. |
+| R6 | Receive a PO | 6.6 | Marks a delivery in | ✂️ 🔴 Partial delivery treated as an edge case | **Partial receipt is the default form.** Asks "how many arrived?" not "confirm 20". |
+| R7 | Cycle count | 6.14 | Counts while walking | ✂️ 🟡 Specified as data, not as a physical walk | Count mode: one item per screen, big number pad, scan to jump, progress "12 of 40", survives signal loss |
+| R8 | Returns | 6.13 | Records returned goods | ✅ | Reuse standard form patterns |
+| R9 | Request a transfer | 6.12 | Asks another location for stock | ✅ | Reuse the shared Request → Approve pattern |
+| R10 | Assemble a kit | 6.11 | Builds a bundle from parts | ✅ | Show buildable quantity before he starts |
+
+**Note:** Rahim has 10 features but only 4 are daily (R1, R2, R3, R4). Those four deserve half of all design effort.
+
+---
+
+### 2.2 ANWAR — Admin, SETUP mode (once, sitting, patient)
+
+| # | Feature | PRD ref | What he does | Gap | Solution |
+|---|---|---|---|---|---|
+| A1 | Onboarding / first run | **absent** | His first 20 minutes | 🕳️ 🔴 **Does not exist in the PRD** | 3-question setup: *what do you sell → where do you keep it → first item or import*. Hide every feature the answers made irrelevant. |
+| A2 | Add item | 6.1 | Creates the catalogue | ✂️ 🔴 Saves with 0 stock, looks broken | **DECIDED:** no quantity field. One form only. Success screen with "Add stock now" + "Add another like this". |
+| A3 | CSV bulk import | 6.8 | Loads 400 items on day one | ✂️ 🔴 Errors force a full re-upload | Editable preview — fix the 12 red rows on screen. Progress indicator. Duplicate-SKU rule. |
+| A4 | Bulk real estate creation | **absent** | Creates 60 flats in Rio Tower | 🕳️ 🔴 60 forms = abandonment | **DEFERRED:** CSV Import is the bulk path. Risk logged — property agents may not manage CSV. |
+| A5 | Item groups | 6.2 | Builds Building → Block → Floor | ⚔️ 🟡 An item may belong to only **one** group | Raise with PM. Design the tree assuming one group; flag if business needs more. |
+| A6 | Locations | 6.2 | Creates warehouses / showrooms | ⚔️ 🟡 PRD allows **zero** locations | Every location column, filter and picker must gracefully vanish for single-site companies |
+| A7 | Suppliers | 6.5 | Builds the contact book | ✅ | Lead-time field matters — it feeds the forecast |
+| A8 | Custom fields | 6.15 | Adds his own business field | ✅ | Group them in their own section on the form |
+| A9 | Unit of measure conversion | 6.16 | Sets carton → 12 pieces | ✅ | Show the conversion result live |
+| A10 | Reorder settings | 6.4 | Chooses fixed or forecast | ⏱️ 🟡 Forecast needs 30–90 days of history, useless on day one | Default to **fixed**. Offer forecast only after enough history exists. |
+
+---
+
+### 2.3 ANWAR — Admin, DAILY mode (30 seconds, phone)
+
+| # | Feature | PRD ref | What he does | Gap | Solution |
+|---|---|---|---|---|---|
+| A11 | Dashboard | §10 | Morning check | ⏱️ 🔴 Half the 10 widgets need Phase 2–4 data | Two dashboards: a Phase 1 version and the full version. Urgent items top and large; statistics below and small. |
+| A12 | Approve POs | 6.6 | Signs off on big orders | ✂️ 🔴 **Only one approver** — he goes on leave, business freezes | Multiple approvers, or a named delegate, or auto-escalation after 48h |
+| A13 | Approve transfers | 6.12 | Signs off on stock leaving | ✂️ 🔴 Same single-approver problem | Same solution. Shared Request → Approve pattern. |
+| A14 | Create POs | 6.6 | Orders stock | ✅ | Pre-fill from the low-stock alert |
+| A15 | Edit / delete items | 6.1 | Fixes and removes | ✅ | Confirmation dialog. Explain the soft-delete/Trash behaviour. |
+| A16 | Audit log | 6.17 | Investigates a change | ✅ | Present as a "History" tab, plain language not raw field names |
+| A17 | Reports (all 8) | §8 | Reads the numbers | ✅ | Low Stock report is a **to-do list**, not a report — one-click Create PO per row |
+| A18 | Notifications | 6.4 | Sees alerts | 🕳️ 🔴 **No notification centre exists in the 14 screens** | Bell icon + list. Alerts stay open until resolved instead of firing once. Second recipient. |
+
+---
+
+### 2.4 MR. SALAM — Viewer (twice a month, read-only)
+
+| # | Feature | What he does | Gap | Solution |
+|---|---|---|---|---|
+| V1 | View items | Checks availability | ⚔️ 🟡 PRD says Viewers may be **clients** — they would see cost prices, suppliers, margins | Decide: Viewer is internal-only, **or** a separate client-facing availability view is needed (new scope) |
+| V2 | Read & export reports | Reads, exports CSV | ✂️ 🔴 Disabled buttons or hidden buttons? | **Hidden.** Never show a door that is locked. |
+| V3 | Dashboard | Glances | 🟡 Forgets the app between visits | Every screen self-explanatory. No learned behaviour required. |
+
+---
+
+## 3. Automatic features (no screen needed)
+
+These have **no human trigger**. Designing a "page" for them wastes effort — they need notifications, badges and inline hints.
+
+| # | Feature | PRD ref | What it needs instead of a screen |
+|---|---|---|---|
+| X1 | Low stock alert | 6.4 | Notification + dashboard banner. Include **how long** it has been low. |
+| X2 | Forecast recalculation (weekly cron) | 6.4 | Silent. Label the reorder point "auto" so the user understands why it changed. |
+| X3 | Expiry alerts | 6.10 | Notification + red badge on the batch |
+| X4 | FEFO suggestion | 6.10 | Inline hint at the moment of picking, overridable |
+| X5 | Movement ledger writes | 6.3 | Invisible — but every action must confirm it happened |
+| X6 | PO → Spend expense sync | 7.2 | One quiet line: *"Expense sent to Spend"* |
+| X7 | Pulse deal sync | 7.1 | 🔴 **Simultaneous claim problem.** Two agents pass the availability check in the same second. The loser must get a human message plus alternatives, not an error code. |
+| X8 | ABC classification | Report 8.7 | A quiet A/B/C letter on the item row |
+
+---
+
+## 4. New solutions not in the PRD
+
+Twelve additions derived from the gap analysis and journeys. **These are scope additions and must be approved, not smuggled in.**
+
+| ID | Solution | Solves | Priority | In Phase 1? |
+|---|---|---|---|---|
+| S1 | **Onboarding path** — 3 questions then one next step | Day one does not exist | 🔴 | Yes |
+| S2 | **Search specification** — multi-field, typo-tolerant, one tap | Rahim's most-used feature is undefined | 🔴 | Yes |
+| S3 | **Available-first rule** — one number, chosen, everywhere | False promises to customers | 🔴 | Yes |
+| S4 | **Success screen with next step** after every save | "0 stock" looks broken | 🔴 | Yes |
+| S5 | **"Add another like this"** — form remembers previous values | Repeat entry is as slow as the first | 🟡 | Yes |
+| S6 | **Editable CSV preview** — fix errors in the browser | Re-uploading 400 rows to fix 12 | 🔴 | Yes |
+| S7 | **Notification centre** — bell + list, alerts stay open | Alerts currently vanish | 🔴 | Phase 2 |
+| S8 | **Backup approver / delegate / escalation** | One person's leave freezes the business | 🔴 | Phase 2 |
+| S9 | **Continuous scan mode** | 20 cartons = 20 back-buttons | 🟡 | Yes |
+| S10 | **Count mode** — one item per screen, walkable | Counting is a walk, not a form | 🟡 | Phase 4 |
+| S11 | **Equipment checkout / return flow** | The product headline promises "who has it" — no flow exists | 🔴 | Phase 2+ |
+| S12 | **Conflict recovery message** — who took it, plus alternatives | Losing a race gives an error, not a next step | 🔴 | Phase 3 |
+
+---
+
+## 5. User journeys
+
+Five journeys, chosen by **frequency × pain**. Each one uses the same structure:
+
+> Trigger → Context → Steps (does · thinks · feels) → Moments of truth → What it demands
+
+Emotion key: 🙂 fine · 😐 neutral · 😕 confused · 😟 worried · 😠 frustrated · 😰 alarmed · 😩 defeated
+
+---
+
+### Journey 1 — Anwar's first twenty minutes
+
+**Trigger:** He has just paid for VantaTrack and wants to see if it was worth it.
+
+**Context:** Monday 9 pm, at home, laptop. 400 items in his head and an old Excel file. He will give this about **fifteen minutes** before deciding it is too complicated.
+
+| # | What he does | What he thinks | Feel |
+|---|---|---|---|
+| 1 | Opens StockLens for the first time | *"Okay… where do I start?"* | 😐 |
+| 2 | Sees 14 empty menu items | *"Groups? Cycle counts? What is all this?"* | 😟 |
+| 3 | Clicks Items — blank page | *"Is it broken, or just empty?"* | 😟 |
+| 4 | Clicks Add Item | *"It wants an item type. Which one is a flat?"* | 😕 |
+| 5 | Fills the form, saves | *"Done. Three minutes."* | 🙂 |
+| 6 | Sees the item — **0 in stock** | *"It didn't save the stock. Did I do it wrong?"* | 😠 |
+| 7 | Thinks about the other 399 | *"Three minutes each. That's twenty hours."* | 😰 |
+| 8 | Considers closing the tab | *"Maybe I'll do this later."* | 😔 |
+
+**Moments of truth**
+
+- **Step 2** — fourteen unexplained menu items is the first impression of the entire product
+- **Step 6** — the predicted "0 stock" confusion, live. Trust breaks here.
+- **Step 7** — the *multiplication* defeats him, not the form
+
+**What it demands** — S1 onboarding · hide irrelevant features by business type · S4 success screen · offer Import the moment bulk work is implied
+
+> The whole journey turns on one thing: **he must reach a small win before minute five.**
+
+---
+
+### Journey 2 — Anwar adds one item on a normal Tuesday
+
+**Trigger:** A new flat came onto the books.
+
+**Context:** Six months in, 400 items, knows the app. Laptop. 30 seconds of attention.
+
+| # | What he does | What he thinks | Feel |
+|---|---|---|---|
+| 1 | Items → Add Item | *"Quick one."* | 🙂 |
+| 2 | Picks type: real estate | *"Good, the form changed to flat fields."* | 🙂 |
+| 3 | Fills name, group, area, price | *"Basically the same as the last one."* | 😐 |
+| 4 | Uploads two photos | *"Wait — was it 1150 or 1200 sq ft?"* | 😕 |
+| 5 | Saves | | 🙂 |
+| 6 | Wants to add the flat next door | *"Do I type all twelve fields again?"* | 😠 |
+
+**Moments of truth**
+
+- **Step 2** — the form must visibly change per type. Showing "batch tracking" on a flat destroys confidence in the whole product.
+- **Step 4** — he leaves the form to check a fact. **Does he lose his work?**
+- **Step 6** — the repeat problem in miniature. Two flats, not sixty. Still annoying.
+
+**What it demands** — type first then a tailored form · draft autosave or a leave-warning · S5 "Add another like this"
+
+---
+
+### Journey 3 — Rahim finds an item
+
+**Trigger:** A customer at the counter asks: *"Do you have A4 premium paper? I need 180 sheets."*
+
+**Context:** Standing, customer watching, phone in one hand, noisy room. He has roughly **15 seconds** before it gets awkward.
+
+| # | What he does | What he thinks | Feel |
+|---|---|---|---|
+| 1 | Opens StockLens on his phone | *"Come on, load."* | 😐 |
+| 2 | Taps search | *"Where is it — top? menu?"* | 😕 |
+| 3 | Types "papr" (hurrying) | *"No results?! It's definitely there."* | 😠 |
+| 4 | Retypes "paper" | | 😐 |
+| 5 | Sees 6 paper items | *"Which one is premium?"* | 😕 |
+| 6 | Opens the right one | *"200. Good."* | 🙂 |
+| 7 | Tells the customer yes | | 🙂 |
+| 8 | **Later:** 50 were reserved | *"I promised something I don't have."* | 😰 |
+
+**Moments of truth**
+
+- **Step 3** — one typo makes the product look empty. A typo is not rare when someone is hurrying.
+- **Step 5** — six similar results with nothing to distinguish them
+- **Step 8** — the disaster. **The system was correct; the screen misled him.**
+
+**What it demands** — S2 typo-tolerant multi-field search · one-tap access · the number in the result row · **S3 available-first**
+
+> Step 8 is the most expensive moment in the entire product, and it is decided by a single design choice: which number to display.
+
+---
+
+### Journey 4 — Rahim receives a delivery
+
+**Trigger:** A truck arrives with 20 cartons. The driver wants to leave.
+
+**Context:** Loading bay, weak signal, one hand free, boxes stacked around him, a real human standing there creating time pressure.
+
+| # | What he does | What he thinks | Feel |
+|---|---|---|---|
+| 1 | Finds the right PO | *"Three orders this week — which is this?"* | 😟 |
+| 2 | Counts the cartons | *"Eighteen. Not twenty."* | 😕 |
+| 3 | Looks for a way to record 18 | *"Can I even receive part of it?"* | 😰 |
+| 4 | Scans carton 1 | *"Good, that worked."* | 🙂 |
+| 5 | Gets bounced to a detail page | *"Now back… and scan again."* | 😐 |
+| 6 | Repeats 17 more times | *"This is painful."* | 😠 |
+| 7 | Types batch number + expiry | *"I can't read this print."* | 😩 |
+| 8 | Signal drops mid-way | *"Did any of that save?"* | 😰 |
+| 9 | Confirms | *"Is finance told, or do I call them?"* | 😐 |
+
+**Moments of truth**
+
+- **Step 3** — partial delivery is **normal life**, not an edge case
+- **Step 6** — the back-button loop. Multiply any small friction by 20.
+- **Step 8** — the PRD says nothing about what happens here
+- **Step 9** — the PO → Spend sync is invisible to him. Should it be?
+
+**What it demands** — partial receipt as the default form · S9 continuous scan · scan the expiry date · offline queue with a visible count · X6 quiet sync confirmation
+
+---
+
+### Journey 5 — Anwar's morning check
+
+**Trigger:** 8:15 am, in the car, before the office.
+
+**Context:** Phone. **Forty seconds.** He wants to know one thing: *is anything wrong today?*
+
+| # | What he does | What he thinks | Feel |
+|---|---|---|---|
+| 1 | Opens the dashboard | *"What needs me today?"* | 😐 |
+| 2 | Sees 10 widgets of equal size | *"Which of these matters?"* | 😕 |
+| 3 | Scrolls hunting for red | *"Where are the problems?"* | 😕 |
+| 4 | Finds a low stock alert | *"How long has that been there?"* | 😟 |
+| 5 | Wants to act on it | *"Do I have to go to another screen?"* | 😐 |
+| 6 | Sees 2 POs awaiting approval | *"Can I approve from here?"* | 😕 |
+| 7 | Closes the app | *"I'll deal with it at the office."* | 😐 |
+
+**Moments of truth**
+
+- **Step 2** — ten equal widgets means nothing has priority, so nothing gets attention
+- **Step 4** — no sense of *when* or *how urgent*
+- **Step 7** — he postponed. **The dashboard failed at its only job.**
+
+**What it demands** — urgent zone on top, large · approve without leaving the dashboard · time context on alerts ("low for 3 days") · a Phase 1 dashboard that shows setup progress instead of empty widgets
+
+---
+
+## 6. What the journeys revealed
+
+### Finding 1 — Every journey has one 😰 and they are all the same shape
+
+| Journey | The 😰 moment | Cause |
+|---|---|---|
+| Day one | *"twenty hours of typing"* | No path shown |
+| Add item | *"do I retype everything?"* | No repeat shortcut |
+| Find item | *"I promised stock I don't have"* | Wrong number shown |
+| Delivery | *"did it save?"* | No feedback |
+| Morning | *"I'll do it later"* | No priority |
+
+**None of these is a missing feature.** Every one is a communication failure.
+
+### Finding 2 — Nobody wants to use this product
+
+Anwar wants his fifteen minutes back. Rahim wants the customer served. Every journey is someone trying to **get out** of the app. Speed and clarity beat richness.
+
+### Finding 3 — Three journeys break at the same place: the number
+
+Available vs on hand vs reserved appears in Journeys 1, 3 and 4. **S3 is the single highest-value decision in this project.**
+
+### Finding 4 — Multiplication is the real enemy
+
+400 items × 3 minutes. 20 cartons × 1 back-button. Small friction is invisible in a demo and fatal in real use.
+
+> Design rule that follows: for every screen, ask *"how many times a day?"* — then multiply the friction.
+
+---
+
+## 7. The eight real problems
+
+Thirteen painful moments compressed into eight problem statements.
+
+### Problem 1 — The screen shows a number the user cannot act on 🔴
+
+- **Who:** Rahim, in front of a customer
+- **Pain:** Sees 200, promises 200, 50 were reserved
+- **Root cause:** Three numbers exist; the design never chose one
+- **Solution:** **Available is primary everywhere.** On hand secondary and grey. Reserved on detail only.
+- **Success measure:** A user can answer *"can I sell this?"* without opening anything
+- **Cost of ignoring:** A real broken promise to a real customer. The most expensive problem in the product.
+
+### Problem 2 — Day one has no path 🔴
+
+- **Who:** Every new company, first 15 minutes
+- **Pain:** 14 empty menus, no starting point, twenty hours of implied typing
+- **Root cause:** The PRD describes a running system, never an empty one
+- **Solution:** S1 — three questions, then one next step. Hide everything the answers made irrelevant.
+- **Success measure:** Something real on screen within 5 minutes
+- **Cost of ignoring:** The customer leaves before the product is ever tested
+
+### Problem 3 — Doing the same thing twice is not faster 🔴
+
+- **Who:** Anwar, entering item 2 … 400
+- **Pain:** Every item costs the same as the first
+- **Root cause:** The form has no memory
+- **Solution:** S5 "Add another like this" · offer Import wherever bulk work is detected
+- **Success measure:** The second item takes under 30 seconds
+- **Cost of ignoring:** Abandonment during setup, before any value is seen
+
+### Problem 4 — Tasks end without saying what happened 🔴
+
+- **Who:** Everyone
+- **Pain:** *"It shows 0 — is it broken?"* · *"Signal dropped — did it save?"* · *"Does finance know?"*
+- **Root cause:** The system does invisible work and says nothing
+- **Solution:** S4 — every task ends in a confirmation with a next step. Offline shows *"3 items waiting to sync."*
+- **Success measure:** Nobody repeats an action out of uncertainty
+
+### Problem 5 — Small friction multiplied becomes unbearable 🟡
+
+- **Who:** Rahim, scanning 20 cartons
+- **Pain:** One extra tap × 20 = a task he starts avoiding
+- **Root cause:** The design was imagined once; the task happens twenty times
+- **Solution:** S9 continuous scan · S10 count mode
+- **Success measure:** 20 cartons = 20 scans and zero navigations
+
+### Problem 6 — Everything looks equally important 🟡
+
+- **Who:** Anwar, 40 seconds in the car
+- **Pain:** Ten equal widgets → cannot find the problem → postpones → nothing gets done
+- **Root cause:** A dashboard built from *available data* rather than *the user's question*
+- **Solution:** Two zones — "Needs you today" (large, actionable) above statistics (small, grey). Add time context.
+- **Success measure:** He can act on the most urgent thing in under 15 seconds
+
+### Problem 7 — Search fails exactly when it is needed most 🟡
+
+- **Who:** Rahim, hurrying, customer waiting
+- **Pain:** "papr" returns nothing; the product looks empty and broken
+- **Root cause:** Search was never specified, so it became a plain text match
+- **Solution:** S2 — multi-field, typo-tolerant, one tap, answer in the row
+- **Success measure:** A hurried person with a typo still finds the item
+
+### Problem 8 — Real life is not the happy path 🔴
+
+- **Who:** Everyone, constantly
+- **Pain:** 18 arrived instead of 20 · signal dropped · two agents clicked the same flat
+- **Root cause:** The PRD describes what happens when things go right
+- **Solution:** Partial receipt as the **default** form · S12 conflict recovery with alternatives · offline queue with a visible count
+- **Success measure:** When something goes wrong, the user still knows what to do next
+
+---
+
+## 8. The root problem
+
+All eight problems share one cause:
+
+| Problem | What actually failed |
+|---|---|
+| 1. Wrong number | System knew 150. Screen said 200. |
+| 2. No day one | System knew he had nothing. Said nothing. |
+| 3. No repeat speed | System knew the last values. Did not offer them. |
+| 4. Silent tasks | System did the work. Did not mention it. |
+| 5. Friction × 20 | System knew he was scanning again. Made him navigate. |
+| 6. Flat dashboard | System knew what was urgent. Showed it same-size. |
+| 7. Search fails | System had the item. Would not admit it. |
+| 8. Unhappy path | System handled it. Screen did not explain it. |
+
+> ### The system knows more than it says.
+
+The database has everything. The engineering is sound. Every failure is the screen refusing to speak.
+
+**Therefore the design brief is not "add features". It is "make the system speak."**
+
+---
+
+## 9. Design principles
+
+Five rules, each earned from a real journey moment. Test every screen against all five.
+
+| # | Principle | Born from |
+|---|---|---|
+| 1 | **Show the number they can act on** | Problem 1 |
+| 2 | **Never end a task on a dead end** | Problems 2, 4 |
+| 3 | **The second time must be faster** | Problems 3, 5 |
+| 4 | **Urgent beats complete on any glance screen** | Problem 6 |
+| 5 | **Say what happened invisibly** | Problems 4, 8 |
+
+**Bonus test, applied to every field on every form:**
+
+> Is the user typing something the system already knows? If yes, it is a design failure.
+
+---
+
+## 10. Phase 1 scope
+
+The PRD ships Phase 1 first: item CRUD (all 5 types), groups, locations, status, barcode/QR, CSV import, basic dashboard. That means **9 screens**, not 14 — and one of them is not in the PRD.
+
+| Screen | Problems it must solve | Notes |
+|---|---|---|
+| **Onboarding** 🆕 | 2 | S1. Not in the PRD — needs approval as scope. |
+| **Items list** | 1, 7 | The spine. Search + available-first. Solve this first. |
+| **Add / Edit item** | 3, 4 | Hardest form: one form must become five. No quantity field. |
+| **Item detail** | 1 | Read view. Shows on hand / reserved / available breakdown. |
+| **Scan** | 5, 7 | Continuous mode, manual fallback |
+| **Import** | 3, 4, 8 | Editable preview |
+| **Locations** | — | Simple form. Must vanish for single-site companies. |
+| **Groups** | — | Tree. One group per item. |
+| **Dashboard** | 6, 4 | Phase 1 version only — setup progress, not empty widgets |
+
+**Recommended order of work**
+
+1. Items list — the spine; everything inherits its patterns
+2. Add / Edit item — the hardest screen; do it while fresh
+3. Scan — must be one tap
+4. Import — if it fails, the customer quits
+5. Dashboard — Phase 1 version
+6. Locations, Groups, Item detail — simple, inherit patterns
+
+**Screens explicitly NOT in this phase:** Movements, Transfers, Returns, Cycle Counts, Purchase Orders, Suppliers, Reports, Trash, Settings (full).
+
+---
+
+## 11. Decision log
+
+Every design decision, plus what it costs. Keep adding to this.
+
+| # | Decision | Date | Consequence |
+|---|---|---|---|
+| 1 | **No quantity field in the Add Item form.** Item creation and stock recording stay separate. | — | Needs S4 success screen with "Add stock now". **Phase 1 has no stock entry point — must be raised with PM.** |
+| 2 | **"Add Item" always opens one form.** No one-or-many branch. | — | Bulk = CSV Import. Add S5 "Add another like this". Risk logged: property agents may not manage CSV. |
+| 3 | **Available is the primary number** shown everywhere. | — | On hand and reserved become secondary. Item detail must show the full breakdown. |
+| 4 | **Viewer sees hidden, not disabled, controls.** | — | Two layout variants per screen, or role-conditional rendering. |
+| 5 | *(open)* Desktop-first or mobile-first per screen | — | Admin setup screens: desktop-first. Staff screens (search, scan, count): mobile-first. |
+
+---
+
+## 12. Open questions for the product owner
+
+### Blocking — needed before wireframes
+
+| # | Question | Why it blocks |
+|---|---|---|
+| 1 | **Phase 1 has no way to add stock.** Pull basic stock-in forward, or accept that Phase 1 is a catalogue where every item reads zero? | Changes the Add Item flow and the Phase 1 dashboard |
+| 2 | Does the Items page default to **all locations** or **the user's location**? | Changes the primary screen's data model |
+| 3 | Should Staff be able to see **other locations'** stock at all? | Useful for transfer requests, misleading for customer promises |
+| 4 | Can one table hold all 5 item types, or do we need **tabs per type**? | A flat needs status, paper needs quantity, a laptop needs who-has-it |
+| 5 | Which fields are **truly required**? The PRD marks only Name. | Cannot design validation or error states |
+| 6 | Are **S1 (onboarding), S7 (notification centre) and S11 (equipment checkout)** approved as scope? | They are not in the PRD at all |
+| 7 | Is **Staff experience mobile-first**? Non-goals say responsive web only, but Rahim is standing in a warehouse. | Changes every Staff layout |
+| 8 | What should Rahim see when he **scans 12 items and the signal dies**? | Not addressed anywhere in the PRD |
+| 9 | Real estate: is **bulk unit creation** needed, or is CSV acceptable? | 60 flats one at a time is an abandonment risk |
+| 10 | An item can belong to **one group only** — is that acceptable to the business? | Affects filters and the group tree design |
+
+### Non-blocking — can be answered during design
+
+| # | Question |
+|---|---|
+| 11 | Can a user select multiple items and act in bulk? |
+| 12 | Is there a grid/photo view for real estate, or list only? |
+| 13 | Can the item type be changed after saving? |
+| 14 | Can tracking mode (none/batch/serial) change after stock exists? |
+| 15 | What happens to items when a location holding stock is deleted? |
+| 16 | Is the group tree drag-and-drop or form-based? |
+| 17 | Duplicate SKU on import — skip, overwrite, or ask? |
+| 18 | Where do licence keys live for digital items — one field, or one per seat? |
+| 19 | Is "Viewer" internal-only, or genuinely client-facing? |
+| 20 | How many statuses need distinct colours? (17 across 5 types) |
+
+---
+
+## Next steps
+
+| Stage | Status |
+|---|---|
+| Empathize — personas, feature analysis, journeys | ✅ Complete (personas are assumptions until validated) |
+| Define — problem statements, principles | ✅ Complete |
+| **Validate** — 3–5 interviews with real inventory managers | ⬜ Recommended before wireframes |
+| Ideate — user flow diagrams for 5 core tasks | ⬜ Next |
+| Prototype — paper sketches, then wireframes | ⬜ |
+| Test — 3 users per round | ⬜ |
+
+**Immediate next action:** send the 10 blocking questions to the product owner, then begin the Items list user flow.
+
+---
+
+*End of document*
